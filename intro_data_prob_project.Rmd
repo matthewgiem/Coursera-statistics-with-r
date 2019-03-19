@@ -125,8 +125,18 @@ ggplot(data=smoking_education) +
 
 
 **Research quesion 3:**
-
+*Find the index values for the desired columns*
 ```{r}
-
+grep("X_age80", colnames(brfss2013))
+grep("income2", colnames(brfss2013))
 ```
-
+*Create a database with the selected columns*
+```{r}
+cols = c(330,50)
+income_age <- brfss2013[,cols,drop=FALSE]
+```
+*Map income by age showing quatiles*
+```{r}
+ggplot(data=income_age, aes(x=income2, y=X_age80)) +
+  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=2, notch=FALSE)
+```
