@@ -271,21 +271,29 @@ $(document).ready(function () {
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">grep</span>(<span class="st">&quot;fruit1&quot;</span>, <span class="kw">colnames</span>(brfss2013))</code></pre></div>
 <pre><code>## [1] 78</code></pre>
 <p><em>Create a data frame with just the vegetables and fruit columns</em></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># cols = c(82,78)</span>
-<span class="co"># fruits_and_vegetables &lt;- brfss2013[,cols, drop=FALSE]</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cols =<span class="st"> </span><span class="kw">c</span>(<span class="dv">82</span>,<span class="dv">78</span>)
+fruits_and_vegetables &lt;-<span class="st"> </span>brfss2013[,cols, drop=<span class="ot">FALSE</span>]</code></pre></div>
 <p><em>Create columns with mutated values that represent the number of monthy fruits and vegetables, approximate the number of weekly fruits and vegetables by mulitplying the value by 4 (4 weeks a month), and approximate the number of daily fruits and vegetables by mulitplying the daily value by 30 (30 days in a month)</em></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># fruits_and_vegetables &lt;- fruits_and_vegetables %&gt;%</span>
-<span class="co">#   mutate(veg_month = ifelse(vegetab1&lt;=399 &amp; vegetab1 &gt;=301, (vegetab1 - 300), ifelse(vegetab1&lt;=299 &amp; vegetab1&gt;=201,(vegetab1-200)*4, ifelse(vegetab1&lt;=199 &amp; vegetab1&gt;=101,(vegetab1-100)*30, 0)))) %&gt;%</span>
-<span class="co">#    mutate(fruit_month = ifelse(fruit1&lt;=399 &amp; fruit1 &gt;=301, (fruit1 - 300), ifelse(fruit1&lt;=299 &amp; fruit1&gt;=201,(fruit1-200)*4, ifelse(fruit1&lt;=199 &amp; fruit1&gt;=101,(fruit1-100)*30, 0))))</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fruits_and_vegetables &lt;-<span class="st"> </span>fruits_and_vegetables <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">veg_month =</span> <span class="kw">ifelse</span>(vegetab1<span class="op">&lt;=</span><span class="dv">399</span> <span class="op">&amp;</span><span class="st"> </span>vegetab1 <span class="op">&gt;=</span><span class="dv">301</span>, (vegetab1 <span class="op">-</span><span class="st"> </span><span class="dv">300</span>), <span class="kw">ifelse</span>(vegetab1<span class="op">&lt;=</span><span class="dv">299</span> <span class="op">&amp;</span><span class="st"> </span>vegetab1<span class="op">&gt;=</span><span class="dv">201</span>,(vegetab1<span class="op">-</span><span class="dv">200</span>)<span class="op">*</span><span class="dv">4</span>, <span class="kw">ifelse</span>(vegetab1<span class="op">&lt;=</span><span class="dv">199</span> <span class="op">&amp;</span><span class="st"> </span>vegetab1<span class="op">&gt;=</span><span class="dv">101</span>,(vegetab1<span class="op">-</span><span class="dv">100</span>)<span class="op">*</span><span class="dv">30</span>, <span class="dv">0</span>)))) <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw">mutate</span>(<span class="dt">fruit_month =</span> <span class="kw">ifelse</span>(fruit1<span class="op">&lt;=</span><span class="dv">399</span> <span class="op">&amp;</span><span class="st"> </span>fruit1 <span class="op">&gt;=</span><span class="dv">301</span>, (fruit1 <span class="op">-</span><span class="st"> </span><span class="dv">300</span>), <span class="kw">ifelse</span>(fruit1<span class="op">&lt;=</span><span class="dv">299</span> <span class="op">&amp;</span><span class="st"> </span>fruit1<span class="op">&gt;=</span><span class="dv">201</span>,(fruit1<span class="op">-</span><span class="dv">200</span>)<span class="op">*</span><span class="dv">4</span>, <span class="kw">ifelse</span>(fruit1<span class="op">&lt;=</span><span class="dv">199</span> <span class="op">&amp;</span><span class="st"> </span>fruit1<span class="op">&gt;=</span><span class="dv">101</span>,(fruit1<span class="op">-</span><span class="dv">100</span>)<span class="op">*</span><span class="dv">30</span>, <span class="dv">0</span>))))</code></pre></div>
 <p><em>Lets look at the mean, median, sd, and max for the new monthly values</em></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># mean(fruits_and_vegetables$veg_month, na.rm=TRUE)</span>
-<span class="co"># median(fruits_and_vegetables$veg_month, na.rm=TRUE)</span>
-<span class="co"># sd(fruits_and_vegetables$veg_month, na.rm=TRUE)</span>
-<span class="co"># max(fruits_and_vegetables$veg_month, na.rm=TRUE)</span>
-<span class="co"># mean(fruits_and_vegetables$fruit_month, na.rm=TRUE)</span>
-<span class="co"># median(fruits_and_vegetables$fruit_month, na.rm=TRUE)</span>
-<span class="co"># sd(fruits_and_vegetables$fruit_month, na.rm=TRUE)</span>
-<span class="co"># max(fruits_and_vegetables$fruit_month, na.rm=TRUE)</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(fruits_and_vegetables<span class="op">$</span>veg_month, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1] 23.85837</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(fruits_and_vegetables<span class="op">$</span>veg_month, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1] 20</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sd</span>(fruits_and_vegetables<span class="op">$</span>veg_month, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1] 23.68094</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">max</span>(fruits_and_vegetables<span class="op">$</span>veg_month, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1] 2970</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(fruits_and_vegetables<span class="op">$</span>fruit_month, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1] 30.28846</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(fruits_and_vegetables<span class="op">$</span>fruit_month, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1] 30</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sd</span>(fruits_and_vegetables<span class="op">$</span>fruit_month, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1] 33.76809</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">max</span>(fruits_and_vegetables<span class="op">$</span>fruit_month, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## [1] 2970</code></pre>
 <p><em>Since I don’t think its possible to eat 2,970 of either frutis or vegetables we will look to remove some of the outliers. First lets use a skatter plot to view how the data is distributed, and check out the pearson correlation</em></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ggplot(data=fruits_and_vegetables, aes(x=fruit_month, y=veg_month, na.rm=TRUE)) +</span>
 <span class="co">#   geom_point()</span>

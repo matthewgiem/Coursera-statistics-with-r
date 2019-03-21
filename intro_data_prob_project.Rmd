@@ -64,25 +64,25 @@ grep("fruit1", colnames(brfss2013))
 ```
 *Create a data frame with just the vegetables and fruit columns*
 ```{r}
-# cols = c(82,78)
-# fruits_and_vegetables <- brfss2013[,cols, drop=FALSE]
+cols = c(82,78)
+fruits_and_vegetables <- brfss2013[,cols, drop=FALSE]
 ```
 *Create columns with mutated values that represent the number of monthy fruits and vegetables, approximate the number of weekly fruits and vegetables by mulitplying the value by 4 (4 weeks a month), and approximate the number of daily fruits and vegetables by mulitplying the daily value by 30 (30 days in a month)*
 ```{r}
-# fruits_and_vegetables <- fruits_and_vegetables %>%
-#   mutate(veg_month = ifelse(vegetab1<=399 & vegetab1 >=301, (vegetab1 - 300), ifelse(vegetab1<=299 & vegetab1>=201,(vegetab1-200)*4, ifelse(vegetab1<=199 & vegetab1>=101,(vegetab1-100)*30, 0)))) %>%
-#    mutate(fruit_month = ifelse(fruit1<=399 & fruit1 >=301, (fruit1 - 300), ifelse(fruit1<=299 & fruit1>=201,(fruit1-200)*4, ifelse(fruit1<=199 & fruit1>=101,(fruit1-100)*30, 0))))
+fruits_and_vegetables <- fruits_and_vegetables %>%
+  mutate(veg_month = ifelse(vegetab1<=399 & vegetab1 >=301, (vegetab1 - 300), ifelse(vegetab1<=299 & vegetab1>=201,(vegetab1-200)*4, ifelse(vegetab1<=199 & vegetab1>=101,(vegetab1-100)*30, 0)))) %>%
+   mutate(fruit_month = ifelse(fruit1<=399 & fruit1 >=301, (fruit1 - 300), ifelse(fruit1<=299 & fruit1>=201,(fruit1-200)*4, ifelse(fruit1<=199 & fruit1>=101,(fruit1-100)*30, 0))))
 ```
 *Lets look at the mean, median, sd, and max for the new monthly values*
 ```{r}
-# mean(fruits_and_vegetables$veg_month, na.rm=TRUE)
-# median(fruits_and_vegetables$veg_month, na.rm=TRUE)
-# sd(fruits_and_vegetables$veg_month, na.rm=TRUE)
-# max(fruits_and_vegetables$veg_month, na.rm=TRUE)
-# mean(fruits_and_vegetables$fruit_month, na.rm=TRUE)
-# median(fruits_and_vegetables$fruit_month, na.rm=TRUE)
-# sd(fruits_and_vegetables$fruit_month, na.rm=TRUE)
-# max(fruits_and_vegetables$fruit_month, na.rm=TRUE)
+mean(fruits_and_vegetables$veg_month, na.rm=TRUE)
+median(fruits_and_vegetables$veg_month, na.rm=TRUE)
+sd(fruits_and_vegetables$veg_month, na.rm=TRUE)
+max(fruits_and_vegetables$veg_month, na.rm=TRUE)
+mean(fruits_and_vegetables$fruit_month, na.rm=TRUE)
+median(fruits_and_vegetables$fruit_month, na.rm=TRUE)
+sd(fruits_and_vegetables$fruit_month, na.rm=TRUE)
+max(fruits_and_vegetables$fruit_month, na.rm=TRUE)
 ```
 *Since I don't think its possible to eat 2,970 of either frutis or vegetables we will look to remove some of the outliers. First lets use a skatter plot to view how the data is distributed, and check out the pearson correlation*
 ```{r}
