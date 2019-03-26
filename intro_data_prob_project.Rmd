@@ -10,18 +10,16 @@ output:
 ## Setup
 
 ### Load packages
+for this project I will be useing ggplot and ggmosaic to display the data and dplyr for our dataframe manipulation
 
 ```{r load-packages, message = FALSE}
 library(ggplot2)
-library(dplyr)
 library(ggmosaic)
+library(dplyr)
 ```
 
 ### Load data
 
-Make sure your data and R Markdown files are in the same directory. When loaded
-your data file will be called `brfss2013`. Delete this note when before you submit 
-your work. 
 
 ```{r load-data}
 load("brfss2013.RData")
@@ -39,24 +37,62 @@ load("brfss2013.RData")
 ## Part 2: Research questions
 
 **Research quesion 1:**
-Explore the correlation between the number of fruits a subject eats a month verse the number of vegetables they eat.
-
+Map out any relataionship between income and age represented in the data
 **Research quesion 2:**
 Explore the correlation between the number of cigaretts one reports smoking and if they wear a seatbelt while in a car.
 
 **Research quesion 3:**
+Explore the correlation between the number of fruits a subject eats a month verse the number of vegetables they eat.
 
 
 * * *
 
 ## Part 3: Exploratory data analysis
 
-NOTE: Insert code chunks as needed by clicking on the "Insert a new code chunk" 
-button (green button with orange arrow) above. Make sure that your code is visible
-in the project you submit. Delete this note when before you submit your work.
-
 **Research quesion 1:**
-<br/>
+*Find the index values for the desired columns*
+```{r}
+grep("X_age80", colnames(brfss2013))
+grep("income2", colnames(brfss2013))
+```
+*Create a database with the selected columns*
+```{r}
+cols = c(330,50)
+income_age <- brfss2013[,cols,drop=FALSE]
+```
+*Mutate the columns to make the graph easier to read and drop the unnessessary*
+```{r}
+income_age <- income_age %>%
+  mutate(age=X_age80) %>%
+  mutate(income=ifelse(income2=="$75,000 or more", ">75K", ifelse(income2=="Less than $75,000", "<75K", ifelse(income2=="Less than $50,000", "<50K", ifelse(income2=="Less than $35,000", "<35K", ifelse(income2=="Less than $25,000", "<25K", ifelse(income2=="Less than $20,000", "<20K", ifelse(income2=="Less than $15,000", "<15K", ifelse(income2=="Less than $10,000", "<10K", NA)))))))))
+```
+*Map income by age showing quatiles*
+```{r}
+ggplot(data=income_age, aes(x=income, y=age)) +
+  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=2, notch=FALSE)
+```
+
+**Research quesion 2:**
+*Find the index values for the desired columns*
+```{r}
+grep("smoke100", colnames(brfss2013))
+grep("X_educag", colnames(brfss2013))
+```
+*Create a database with the selected columns*
+```{r}
+cols = c(68,263)
+smoking_education <- brfss2013[,cols,drop=FALSE]
+```
+*Create Mosaic comparing smoking with the highest education one completed*
+```{r}
+ggplot(data=smoking_education) +
+  geom_mosaic(aes(x=product(X_educag, smoke100), fill=X_educag), na.rm=TRUE) +
+  labs(x="values", title="name of graph")
+```
+
+
+**Research quesion 3:**
+
 *Find the index values for the columns I wish to analysis*
 ```{r}
 grep("vegetab1", colnames(brfss2013))
@@ -75,14 +111,10 @@ fruits_and_vegetables <- fruits_and_vegetables %>%
 ```
 *Lets look at the mean, median, sd, and max for the new monthly values*
 ```{r}
-mean(fruits_and_vegetables$veg_month, na.rm=TRUE)
-median(fruits_and_vegetables$veg_month, na.rm=TRUE)
-sd(fruits_and_vegetables$veg_month, na.rm=TRUE)
-max(fruits_and_vegetables$veg_month, na.rm=TRUE)
-mean(fruits_and_vegetables$fruit_month, na.rm=TRUE)
-median(fruits_and_vegetables$fruit_month, na.rm=TRUE)
-sd(fruits_and_vegetables$fruit_month, na.rm=TRUE)
-max(fruits_and_vegetables$fruit_month, na.rm=TRUE)
+fruits_and_vegetables %>%
+  summarise(mean_fruits = mean(fruit_month, na.rm=TRUE), median_fruits = median(fruit_month, na.rm=TRUE), sd_fruits = sd(fruit_month, na.rm=TRUE), max_fruits = max(fruit_month, na.rm=TRUE))
+fruits_and_vegetables %>%
+  summarise(mean_veg = mean(veg_month, na.rm=TRUE), median_veg = median(veg_month, na.rm=TRUE), sd_veg = sd(veg_month, na.rm=TRUE), max_veg = max(veg_month, na.rm=TRUE))
 ```
 *Since I don't think its possible to eat 2,970 of either frutis or vegetables we will look to remove some of the outliers. First lets use a skatter plot to view how the data is distributed, and check out the pearson correlation*
 ```{r}
@@ -104,45 +136,4 @@ max(fruits_and_vegetables$fruit_month, na.rm=TRUE)
 #   geom_point()
 # fruits_and_veggies_plot + stat_density_2d(aes(fill = ..level..), geom="polygon")
 # cor(x=fruits_and_vegetables$fruit_month_, y=fruits_and_vegetables$veg_month_, method="pearson", use="complete.obs")
-```
-**Research quesion 2:**
-*Find the index values for the desired columns*
-```{r}
-grep("smoke100", colnames(brfss2013))
-grep("X_educag", colnames(brfss2013))
-```
-*Create a database with the selected columns*
-```{r}
-cols = c(68,263)
-smoking_education <- brfss2013[,cols,drop=FALSE]
-```
-*Create Mosaic comparing smoking with the highest education one completed*
-```{r}
-ggplot(data=smoking_education) +
-  geom_mosaic(aes(x=product(X_educag, smoke100), fill=X_educag), na.rm=TRUE) +
-  labs(x="values", title="name of graph")
-```
-
-
-**Research quesion 3:**
-*Find the index values for the desired columns*
-```{r}
-grep("X_age80", colnames(brfss2013))
-grep("income2", colnames(brfss2013))
-```
-*Create a database with the selected columns*
-```{r}
-cols = c(330,50)
-income_age <- brfss2013[,cols,drop=FALSE]
-```
-*Mutate the columns to make the graph easier to read and drop the unnessessary*
-```{r}
-income_age <- income_age %>%
-  mutate(age=X_age80) %>%
-  mutate(income=ifelse(income2=="$75,000 or more", ">75K", ifelse(income2=="Less than $75,000", "<75K", ifelse(income2=="Less than $50,000", "<50K", ifelse(income2=="Less than $35,000", "<35K", ifelse(income2=="Less than $25,000", "<25K", ifelse(income2=="Less than $20,000", "<20K", ifelse(income2=="Less than $15,000", "<15K", ifelse(income2=="Less than $10,000", "<10K", NA)))))))))
-```
-*Map income by age showing quatiles*
-```{r}
-ggplot(data=income_age, aes(x=income, y=age)) +
-  geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=2, notch=FALSE)
 ```
