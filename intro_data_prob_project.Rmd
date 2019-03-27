@@ -31,6 +31,7 @@ load("brfss2013.RData")
 
 ## Part 1: Data
 
+The Behavioral Risk Factor Surveilance System or BRFSS for short is a telephone survay conducted in all 50 states, the District of Columbia, Guam, and Puerto Rico.  The objective of the BRFSS is to "collect uniform, state-specific data on preventive health practices and risk behaviors that are linked to chronic diseases, injuries, and preventable infectious diseases that affect the adult population."  The data collected by the BRFSS is done through a collection of dialing landline and cell phone interviews that are randomized
 
 * * *
 
@@ -38,6 +39,7 @@ load("brfss2013.RData")
 
 **Research quesion 1:**
 Map out any relataionship between income and age represented in the data
+
 **Research quesion 2:**
 Explore the correlation between the number of cigaretts one reports smoking and if they wear a seatbelt while in a car.
 
@@ -89,7 +91,10 @@ ggplot(data=smoking_education) +
   geom_mosaic(aes(x=product(X_educag, smoke100), fill=X_educag), na.rm=TRUE) +
   labs(x="values", title="name of graph")
 ```
-
+*What are the percentages*
+```{r}
+table(smoking_education$X_educag)/nrow(smoking_education)
+```
 
 **Research quesion 3:**
 
@@ -122,8 +127,10 @@ fruits_and_vegetables %>%
 #   geom_point()
 # cor(x=fruits_and_vegetables$fruit_month, y=fruits_and_vegetables$veg_month, method="pearson", use = "complete.obs" )
 ```
-*Lets take the mean of each of the veg_month and fruits_month and add 2 sd and use that as our window of values to be used in my analysis*<br/>
-1.  *veg_month = 23 + 2 X 24 = ***71** <br/>
+*Lets take the mean of each of the veg_month and fruits_month and add 2 sd and use that as our window of values to be used in my analysis*
+
+1.  *veg_month = 23 + 2 X 24 = ***71** 
+
 2.  *fruit_month = 30 + 2 X 30 = ***90**
 ```{r}
 # fruits_and_vegetables <- fruits_and_vegetables %>%
