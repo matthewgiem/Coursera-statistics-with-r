@@ -32,22 +32,28 @@ load("brfss2013.RData")
 ## Part 1: Data
 
 The Behavioral Risk Factor Surveillance System or BRFSS for short is a health survey originating in 1984 with 15 states conducting monthly telephone interviews who’s partipicents are non-institutionalized adults (18 and over). According to the [BRFSS](https://www.cdc.gov/brfss/annual_data/2013/pdf/Overview_2013.pdf) during telephone interviews the subject were questioned about there behavioral risk factors including but not limited to “tobacco use, HIV/AIDS knowledge and prevention, exercise, immunization, health status, healthy days — health-related quality of life, health care access, inadequate sleep, hypertension awareness, cholesterol awareness, chronic health conditions, alcohol consumption, fruits and vegetables consumption, arthritis burden, and seatbelt use”.  Today the survey covers all 50 states, the District of Columbia, Guam, and Puerto Rico “making it the larges continuously conducted heath survey system in the world … completing more than 400,000 interviews each year.” 
-<br>
 
-The BRFSS land line and recently cell phone, interview data has been randomized by each states collection agency.  While “No direct method of accounting fort non-telephone coverage is employed by the BRFSS”, the BRFSS uses an “iterative proportional filling (or “ranking”)’ To account for the households with out phone access.  This methodology weights the survey data to underlying demographics so that under represented groups are better represented in the final data set. “The use of ranking has been shown by researches to reduce error within estimates.” 
+The BRFSS land line and recently cell phone, interview data has been randomized by each states collection agency.  While “No direct method of accounting fort non-telephone coverage is employed by the BRFSS”, the BRFSS uses an “iterative proportional filling (or “ranking”)’ To account for the households with out phone access.  This methodology weights the survey data to underlying demographics so that under represented groups are better represented in the final data set. “The use of ranking has been shown by researches to reduce error within estimates.”
+
 The inability of the researchers to question everyone that they have randomly sampled and the fact that during the interview the participant has the option to terminate the interview (resulting in many unanswered questions). The BRFSS while a great tool for identifying correlation can not used in causal analysis.  What ever conclusions, will need further independent study with a properly randomized sample study. STILL NEED TO TALK ABOUT THE POPULATION STUDIED
 
 * * *
 
 ## Part 2: Research questions
 
-**Research quesion 1:**
+```{r echo=FALSE, results="asis", tidy=FALSE}
+cat("[**Research quesion 1:**](#ResearchQuestion1)")
+```
 Map out any relataionship between income and age represented in the data
 
-**Research quesion 2:**
+```{r echo=FALSE, results="asis", tidy=FALSE}
+cat("[**Research quesion 2:**](#ResearchQuestion2)")
+```
 Explore the correlation between the number of cigaretts one reports smoking and if they wear a seatbelt while in a car.
 
-**Research quesion 3:**
+```{r echo=FALSE, results="asis", tidy=FALSE}
+cat("[**Research quesion 3:**](#ResearchQuestion3)")
+```
 Explore the correlation between the number of fruits a subject eats a month verse the number of vegetables they eat.
 
 
@@ -55,7 +61,8 @@ Explore the correlation between the number of fruits a subject eats a month vers
 
 ## Part 3: Exploratory data analysis
 
-**Research quesion 1:**
+##### **Research quesion 1:** {#ResearchQuestion1}
+
 *Find the index values for the desired columns*
 ```{r}
 grep("X_age80", colnames(brfss2013))
@@ -78,7 +85,7 @@ ggplot(data=income_age, aes(x=income, y=age)) +
   geom_boxplot(outlier.colour="black", outlier.shape=16, outlier.size=2, notch=FALSE)
 ```
 
-**Research quesion 2:**
+##### **Research quesion 2:** {#ResearchQuestion2}
 *Find the index values for the desired columns*
 ```{r}
 grep("smoke100", colnames(brfss2013))
@@ -100,7 +107,7 @@ ggplot(data=smoking_education) +
 table(smoking_education$X_educag)/nrow(smoking_education)
 ```
 
-**Research quesion 3:**
+##### **Research quesion 3:** {#ResearchQuestion3}
 
 *Find the index values for the columns I wish to analysis*
 ```{r}
@@ -127,9 +134,9 @@ fruits_and_vegetables %>%
 ```
 *Since I don't think its possible to eat 2,970 of either frutis or vegetables we will look to remove some of the outliers. First lets use a skatter plot to view how the data is distributed, and check out the pearson correlation*
 ```{r}
-# ggplot(data=fruits_and_vegetables, aes(x=fruit_month, y=veg_month, na.rm=TRUE)) +
-#   geom_point()
-# cor(x=fruits_and_vegetables$fruit_month, y=fruits_and_vegetables$veg_month, method="pearson", use = "complete.obs" )
+ ggplot(data=fruits_and_vegetables, aes(x=fruit_month, y=veg_month, na.rm=TRUE)) +
+   geom_point()
+ cor(x=fruits_and_vegetables$fruit_month, y=fruits_and_vegetables$veg_month, method="pearson", use = "complete.obs" )
 ```
 *Lets take the mean of each of the veg_month and fruits_month and add 2 sd and use that as our window of values to be used in my analysis*
 
@@ -137,14 +144,14 @@ fruits_and_vegetables %>%
 
 2.  *fruit_month = 30 + 2 X 30 = ***90**
 ```{r}
-# fruits_and_vegetables <- fruits_and_vegetables %>%
-#   mutate(fruit_month_ = ifelse(fruit_month<91, fruit_month, NA)) %>%
-#   mutate(veg_month_ = ifelse(veg_month<72, veg_month, NA))
+ fruits_and_vegetables <- fruits_and_vegetables %>%
+   mutate(fruit_month_ = ifelse(fruit_month<91, fruit_month, NA)) %>%
+   mutate(veg_month_ = ifelse(veg_month<72, veg_month, NA))
 ```
 *Lets plot these new values and check out their correlation*
 ```{r}
-# fruits_and_veggies_plot <- ggplot(data=fruits_and_vegetables, aes(x=fruit_month_, y=veg_month_, na.rm=TRUE)) +
-#   geom_point()
-# fruits_and_veggies_plot + stat_density_2d(aes(fill = ..level..), geom="polygon")
-# cor(x=fruits_and_vegetables$fruit_month_, y=fruits_and_vegetables$veg_month_, method="pearson", use="complete.obs")
+ fruits_and_veggies_plot <- ggplot(data=fruits_and_vegetables, aes(x=fruit_month_, y=veg_month_, na.rm=TRUE)) +
+   geom_point()
+ fruits_and_veggies_plot + stat_density_2d(aes(fill = ..level..), geom="polygon")
+ cor(x=fruits_and_vegetables$fruit_month_, y=fruits_and_vegetables$veg_month_, method="pearson", use="complete.obs")
 ```
