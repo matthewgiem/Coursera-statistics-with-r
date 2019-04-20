@@ -119,7 +119,8 @@ grep("fruit1", colnames(brfss2013))
 cols = c(82,78)
 fruits_and_vegetables <- brfss2013[,cols, drop=FALSE]
 ```
-*Create columns with mutated values that represent the number of monthy fruits and vegetables, approximate the number of weekly fruits and vegetables by mulitplying the value by 4 (4 weeks a month), and approximate the number of daily fruits and vegetables by mulitplying the daily value by 30 (30 days in a month)*
+*The data is stored in the database as such: when the value is [101-199]  the tens and units columns gives you the integer amount per day, when the value is [201 - 299] the tens and unit columns gives you the integer amount per week, when the value is [301 - 300] the tens and units give you the integer amount per month, 300 means less than once per month and 0 means never. (for our purpose we will treat 300 and 0 as 0)  Next create columns with mutated values that represent the number of monthly fruits and vegetables eaten, approximate the number of weekly fruits and vegetables by multiplying the value by 4 (4 weeks a month), and approximate the number of daily fruits and vegetables by multiplying the daily value by 30 (30 days in a month)
+*
 ```{r}
 fruits_and_vegetables <- fruits_and_vegetables %>%
   mutate(veg_month = ifelse(vegetab1<=399 & vegetab1 >=301, (vegetab1 - 300), ifelse(vegetab1<=299 & vegetab1>=201,(vegetab1-200)*4, ifelse(vegetab1<=199 & vegetab1>=101,(vegetab1-100)*30, 0)))) %>%
