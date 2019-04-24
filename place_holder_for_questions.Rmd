@@ -1,0 +1,106 @@
+---
+title: "Exploring the BRFSS data"
+output: 
+  html_document: 
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+---
+
+
+## Setup
+
+### Load packages
+for this project I will be useing ggplot and ggmosaic to display the data and dplyr for our dataframe manipulation
+
+```{r load-packages, message = FALSE}
+library(ggplot2)
+library(ggmosaic)
+library(dplyr)
+```
+
+### Load data
+
+
+```{r load-data}
+load("brfss2013.RData")
+```
+
+
+* * *
+
+## Part 1: Data
+
+The Behavioral Risk Factor Surveillance System or BRFSS for short is a health survey originating in 1984 with 15 states conducting monthly telephone interviews who’s partipicents are non-institutionalized adults (18 and over). According to the [BRFSS](https://www.cdc.gov/brfss/annual_data/2013/pdf/Overview_2013.pdf) during telephone interviews the subject were questioned about there behavioral risk factors including but not limited to “tobacco use, HIV/AIDS knowledge and prevention, exercise, immunization, health status, healthy days — health-related quality of life, health care access, inadequate sleep, hypertension awareness, cholesterol awareness, chronic health conditions, alcohol consumption, fruits and vegetables consumption, arthritis burden, and seatbelt use”.  Today the survey covers all 50 states, the District of Columbia, Guam, and Puerto Rico “making it the larges continuously conducted heath survey system in the world … completing more than 400,000 interviews each year.” 
+
+The BRFSS land line and recently cell phone, interview data has been randomized by each states collection agency.  While “No direct method of accounting fort non-telephone coverage is employed by the BRFSS”, the BRFSS uses an “iterative proportional filling (or “ranking”)’ To account for the households with out phone access.  This methodology weights the survey data to underlying demographics so that under represented groups are better represented in the final data set. “The use of ranking has been shown by researches to reduce error within estimates.”
+
+The inability of the researchers to question everyone that they have randomly sampled and the fact that during the interview the participant has the option to terminate the interview (resulting in many unanswered questions). The BRFSS while a great tool for identifying correlation can not used in causal analysis.  What ever conclusions, will need further independent study with a properly randomized sample study. 
+
+STILL NEED TO TALK ABOUT THE POPULATION STUDIED
+
+* * *
+
+
+## Part 2: Research questions
+
+```{r echo=FALSE, results="asis", tidy=FALSE}
+cat("[**Research quesion 1:**](#ResearchQuestion1)")
+```
+
+Explore the correlation between the number or fruits and the number of vegetables the participants eat each month. My assumption is that fruit and vegetable consumption is positively correlated.  After this is complete check if the number of fruits and vegetables has a positive correlation with the participants over all health.
+
+```{r echo=FALSE, results="asis", tidy=FALSE}
+cat("[**Research quesion 2:**](#ResearchQuestion2)")
+```
+Explore the relationship between smoking and educations. How predictive is education level to if they smoke or not
+
+```{r echo=FALSE, results="asis", tidy=FALSE}
+cat("[**Research quesion 3:**](#ResearchQuestion3)")
+```
+Question 3
+
+
+* * *
+
+##### **Research quesion 2:** {#ResearchQuestion2}
+
+*Find the index values for the desired columns*
+```{r}
+grep("smoke100", colnames(brfss2013))
+grep("X_educag", colnames(brfss2013))
+```
+*Create a database with the selected columns*
+```{r}
+cols = c(68,263)
+smoking_education <- brfss2013[,cols,drop=FALSE]
+names(smoking_education) <- c("Smoke", "Education")
+```
+*Create Mosaic comparing smoking with the highest educational level completed*
+```{r}
+ggplot(data=smoking_education) +
+  geom_mosaic(aes(x=product(Education, Smoke), fill=Education), na.rm=TRUE) +
+  labs(x="values", title="Yes vs No") + scale_fill_brewer(palette = "YlOrRd")
+```
+
+*It aprears that attending college/technical school and grraduating high school have similar levels of smoking while graduating from college and not graduating from high school play a roll in wether you smoke or not lets view the data as a bar graph with the level of education as the independant varialbe*
+*What are the percentages*
+```{r}
+smoking_edu_graph <- smoking_education %>%
+  filter(!is.na(smoking_education$Education), !is.na(smoking_education$Smoke)) %>%
+  group_by(Smoke, Education) %>%
+  summarise(n = n())
+ggplot(smoking_edu_graph, aes(x = Education, y = n, fill = Smoke)) + geom_bar(stat = "identity", position = position_dodge(0.6), alpha = 0.8) + scale_fill_brewer(palette = "YlOrRd") + scale_y_continuous("count") + labs(title = "Smoking distribution by Education level") + coord_flip()
+```
+
+```{r}
+ggplot(data=smoking_education) +
+  geom_mosaic(aes(x=product(Smoke, Education), fill=Smoke), na.rm=TRUE) +
+  labs(x="values", title="Yes vs No") + scale_fill_brewer(palette = "YlOrRd") + theme(axis.text.x = element_text(angle = 45))
+```
+
+```{r}
+ggplot(data=smoking_education) +
+  geom_mosaic(aes(x=product(Smoke, Education), fill=Smoke), na.rm=TRUE) +
+  labs(x="values", title="Yes vs No") + scale_fill_brewer(palette = "YlOrRd") + theme(axis.text.x = element_text(angle = 45)) + coord_fixed(ratio = 1)
+```
